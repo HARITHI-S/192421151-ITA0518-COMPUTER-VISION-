@@ -1,0 +1,35 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+import urllib.request
+
+# Download a sample image
+url = "https://raw.githubusercontent.com/opencv/opencv/master/samples/data/lena.jpg"
+urllib.request.urlretrieve(url, "input.jpg")
+
+# Read the image
+img = cv2.imread("input.jpg")
+
+# Get image dimensions
+rows, cols = img.shape[:2]
+
+# Translation values
+tx = 100   # Move 100 pixels to the right
+ty = 50    # Move 50 pixels down
+
+# Translation matrix
+M = np.float32([[1, 0, tx],
+                [0, 1, ty]])
+
+# Perform image translation
+translated = cv2.warpAffine(img, M, (cols, rows))
+
+# Display images
+print("Original Image")
+cv2_imshow(img)
+
+print("Translated Image")
+cv2_imshow(translated)
+
+# Save the output image
+cv2.imwrite("translated_image.jpg", translated)
