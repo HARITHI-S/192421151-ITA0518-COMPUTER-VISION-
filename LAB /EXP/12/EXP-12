@@ -1,0 +1,34 @@
+import cv2
+import numpy as np
+import urllib.request
+from google.colab.patches import cv2_imshow
+
+# Download a sample image
+url = "https://raw.githubusercontent.com/opencv/opencv/master/samples/data/fruits.jpg"
+urllib.request.urlretrieve(url, "sample.jpg")
+
+img = cv2.imread("sample.jpg")
+
+rows, cols = img.shape[:2]
+
+# Source points
+pts1 = np.float32([[50, 50],
+                   [400, 50],
+                   [50, 400],
+                   [400, 400]])
+
+# Destination points
+pts2 = np.float32([[0, 0],
+                   [350, 30],
+                   [30, 400],
+                   [400, 400]])
+
+# Perspective transformation
+M = cv2.getPerspectiveTransform(pts1, pts2)
+result = cv2.warpPerspective(img, M, (cols, rows))
+
+print("Original Image")
+cv2_imshow(img)
+
+print("Perspective Transformed Image")
+cv2_imshow(result)
