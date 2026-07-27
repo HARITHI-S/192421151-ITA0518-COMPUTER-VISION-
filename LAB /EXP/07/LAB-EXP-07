@@ -1,0 +1,56 @@
+import cv2
+import urllib.request
+from google.colab.patches import cv2_imshow
+
+# Download a sample video automatically
+# Previous URLs resulted in 404, 403, or SSL errors. Trying a common example video from w3schools.
+video_url = "https://www.w3schools.com/html/mov_bbb.mp4"
+urllib.request.urlretrieve(video_url, "sample_video.mp4")
+
+# Open the downloaded video
+cap = cv2.VideoCapture("sample_video.mp4")
+
+if not cap.isOpened():
+    print("Error: Could not open the video.")
+else:
+    slow_factor = 0.5   # Scale down
+    fast_factor = 2.0   # Scale up
+
+    frame_count = 0
+    max_frames = 3
+
+    print("Processing Video...\n")
+
+    while True:
+        ret, frame = cap.read()
+
+        if not ret:
+            break
+
+        # Resize for slow motion effect
+        slow_frame = cv2.resize(frame, None, fx=slow_factor, fy=slow_factor)
+
+        # Resize for fast motion effect
+        fast_frame = cv2.resize(frame, None, fx=fast_factor, fy=fast_factor)
+
+        print(f"Frame {frame_count + 1}")
+
+        print("Original Frame")
+        cv2_imshow(frame)
+
+        print("Slow Motion Frame")
+        cv2_imshow(slow_frame)
+
+        print("Fast Motion Frame")
+        cv2_imshow(fast_frame)
+
+        print("--------------------------------")
+
+        frame_count += 1
+
+        if frame_count >= max_frames:
+            break
+
+    cap.release()
+
+print("Video processing completed.")
