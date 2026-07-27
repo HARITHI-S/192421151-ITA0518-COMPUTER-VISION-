@@ -1,0 +1,40 @@
+import cv2
+import urllib.request
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+# Download a sample image automatically
+url = "https://raw.githubusercontent.com/opencv/opencv/master/samples/data/lena.jpg"
+urllib.request.urlretrieve(url, "sample.jpg")
+
+# Read the image
+img = cv2.imread("sample.jpg")
+
+# Define 3 points in the original image
+pts1 = np.float32([[50, 50],
+                   [200, 50],
+                   [50, 200]])
+
+# Define their new positions
+pts2 = np.float32([[10, 100],
+                   [200, 50],
+                   [100, 250]])
+
+# Create the affine transformation matrix
+matrix = cv2.getAffineTransform(pts1, pts2)
+
+# Apply affine transformation
+rows, cols = img.shape[:2]
+affine_img = cv2.warpAffine(img, matrix, (cols, rows))
+
+# Display images
+print("Original Image")
+cv2_imshow(img)
+
+print("Affine Transformed Image")
+cv2_imshow(affine_img)
+
+# Save the output image
+cv2.imwrite("affine_transformed.jpg", affine_img)
+
+print("Affine Transformation Completed.")
