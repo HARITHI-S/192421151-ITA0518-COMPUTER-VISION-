@@ -1,0 +1,43 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow # Import cv2_imshow
+
+# Create a black image
+img = np.zeros((500, 500, 3), dtype=np.uint8)
+
+# Draw a white rectangle
+cv2.rectangle(img, (100, 100), (400, 400), (255, 255, 255), -1)
+
+# Draw circles at the corners
+cv2.circle(img, (100, 100), 8, (0, 0, 255), -1)
+cv2.circle(img, (400, 100), 8, (0, 255, 0), -1)
+cv2.circle(img, (100, 400), 8, (255, 0, 0), -1)
+cv2.circle(img, (400, 400), 8, (0, 255, 255), -1)
+
+# Source points
+src_pts = np.float32([
+    [100, 100],
+    [400, 100],
+    [100, 400],
+    [400, 400]
+])
+
+# Destination points
+dst_pts = np.float32([
+    [50, 50],
+    [450, 100],
+    [100, 450],
+    [420, 400]
+])
+
+# Compute Homography Matrix
+H, status = cv2.findHomography(src_pts, dst_pts)
+
+# Apply Homography
+output = cv2.warpPerspective(img, H, (500, 500))
+
+# Display using cv2_imshow
+cv2_imshow(img)
+cv2_imshow(output)
+
+# cv2.waitKey(0) and cv2.destroyAllWindows() are not needed with cv2_imshow in Colab
