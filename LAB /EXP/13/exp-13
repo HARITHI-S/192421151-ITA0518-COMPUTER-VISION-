@@ -1,0 +1,62 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow # Import cv2_imshow
+
+# Frame properties
+width, height = 640, 480
+fps = 30
+duration = 30          # seconds
+total_frames = fps * duration
+
+# Ball position and speed
+x, y = 100, 100
+dx, dy = 5, 4
+
+for i in range(total_frames):
+
+    # Create black frame
+    frame = np.zeros((height, width, 3), dtype=np.uint8)
+
+    # Draw moving ball
+    cv2.circle(frame, (x, y), 30, (0, 255, 255), -1)
+
+    # Draw moving rectangle
+    cv2.rectangle(frame, (200, 150), (350, 280), (255, 0, 0), 3)
+
+    # Draw moving line
+    cv2.line(frame, (0, i % height), (width, (i + 150) % height), (0, 255, 0), 2)
+
+    # Display frame number
+    cv2.putText(frame, f"Frame: {i+1}", (20, 40),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
+
+    # Update ball position
+    x += dx
+    y += dy
+
+    if x >= width-30 or x <= 30:
+        dx = -dx
+    if y >= height-30 or y <= 30:
+        dy = -dy
+
+    # Source points
+    src = np.float32([
+        [100,100],
+        [540,100],
+        [100,380],
+        [540,380]
+    ])
+
+    # Destination points
+    dst = np.float32([
+        [50,50],
+        [590,100],
+        [120,430],
+        [520,380]
+    ])
+
+    # Perspective Transformation
+    M = cv2.getPerspectiveTransform(src, dst)
+    output = cv2.warpPerspective(frame, M, (width, height))
+    cv2_imshow(frame)
+    cv2_imshow(output)
